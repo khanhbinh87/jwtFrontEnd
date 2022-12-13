@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Register.scss'
 import { useHistory } from 'react-router-dom'
+import axios from 'axios';
 export default function Register() {
     let history = useHistory();
     const handleLogin = () => {
         history.push('/login')
     }
+    useEffect(()=>{
+        axios.get('http://localhost:8080/api/test-api').then(data =>{
+            console.log(data)
+        })
+
+    },[])
     return (
         <div className='register-container'>
             <div className='container'>
@@ -19,25 +26,25 @@ export default function Register() {
 
                         <form className='d-flex flex-column gap-3 mt-2'>
                             <div className='form-group>'>
-                                <label for="email">Email address :</label>
+                                <label htmlFor="email">Email address :</label>
                                 <input id="email" type="text" placeholder='Email ' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
-                                <label for="phone">Phone number :</label>
+                                <label htmlFor="phone">Phone number :</label>
                                 <input id="phone" type="text" placeholder='Phone number' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
-                                <label for="username">Username :</label>
+                                <label htmlFor="username">Username :</label>
                                 <input id="username" type="text" placeholder='Username' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
-                                <label for="password">Password :</label>
-                                <input id="password" type="password" placeholder='Password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                <label htmlFor="password">Password :</label>
+                                <input autoComplete='' id="password" type="password" placeholder='Password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
                             </div>
 
                             <div className='form-group>'>
-                                <label for="repassword">Re-enter password :</label>
-                                <input id="repassword" type="password" placeholder='Re-enter password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                <label htmlFor="repassword">Re-enter password :</label>
+                                <input autoComplete=''  id="repassword" type="password" placeholder='Re-enter password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
                             </div>
                             <button className='btn btn-primary'>Register</button>
 
