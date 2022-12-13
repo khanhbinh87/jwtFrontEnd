@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import './Register.scss'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios';
+import { toast } from 'react-toastify';
+
 export default function Register() {
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
@@ -13,9 +15,36 @@ export default function Register() {
     const handleLogin = () => {
         history.push('/login')
     }
+    const isValidInput = () => {
+        if (!email) {
+            toast.error('Email is required')
+            return false;
+        }
+        const re = /\S+@\S+\.\S+/;
+        if (!re.test(email)) {
+            toast.error('Please enter the valid email address')
+            return false;
+        }
+        
+        if (!phone) {
+            toast.error('Phone is required')
+            return false;
+        }
+        if (!password) {
+            toast.error('Password is required')
+            return false;
+        }
+        if (password != confirmPassword) {
+            toast.error('Your password is not same')
+        }
+        return true
+    }
+    const objectListInput = () => {
+
+    }
     const handleRegister = () => {
-        let userData = { email, phone, username, password }
-        console.log(userData)
+        let check = isValidInput()
+
     }
     useEffect(() => {
         // axios.get('http://localhost:8080/api/test-api').then(data =>{
@@ -43,7 +72,7 @@ export default function Register() {
                                     id="email"
                                     type="text"
                                     placeholder='Email '
-                                    className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                    className='d-block w-100 form-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="phone">Phone number :</label>
@@ -51,21 +80,21 @@ export default function Register() {
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
 
-                                    id="phone" type="text" placeholder='Phone number' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                    id="phone" type="text" placeholder='Phone number' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="username">Username :</label>
                                 <input
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    id="username" type="text" placeholder='Username' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                    id="username" type="text" placeholder='Username' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="password">Password :</label>
                                 <input
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    autoComplete='' id="password" type="password" placeholder='Password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                    autoComplete='' id="password" type="password" placeholder='Password' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
                             </div>
 
                             <div className='form-group>'>
@@ -73,7 +102,7 @@ export default function Register() {
                                 <input
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    autoComplete='' id="repassword" type="password" placeholder='Re-enter password' className='d-block w-100 from-control p-2 rounded-2 border border-success' />
+                                    autoComplete='' id="repassword" type="password" placeholder='Re-enter password' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
                             </div>
                             <button
                                 className='btn btn-primary'
