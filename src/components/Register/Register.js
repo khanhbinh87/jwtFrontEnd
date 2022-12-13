@@ -10,32 +10,49 @@ export default function Register() {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [username, setUsername] = useState("")
-
+    const defaultValueInput = {
+        isValidEmail: true,
+        isValidPhone: true,
+        isValidPassword: true,
+        isValidConfirmPassword: true,
+    }
+    const [objCheckInput, setObjCheckInput] = useState(defaultValueInput)
     let history = useHistory();
     const handleLogin = () => {
         history.push('/login')
     }
     const isValidInput = () => {
+        setObjCheckInput(defaultValueInput);
         if (!email) {
             toast.error('Email is required')
+            setObjCheckInput({ ...defaultValueInput, isValidEmail: false })
             return false;
         }
         const re = /\S+@\S+\.\S+/;
         if (!re.test(email)) {
             toast.error('Please enter the valid email address')
+            setObjCheckInput({ ...defaultValueInput, isValidEmail: false })
+
             return false;
         }
-        
+
         if (!phone) {
             toast.error('Phone is required')
+            setObjCheckInput({ ...defaultValueInput, isValidPhone: false })
+
             return false;
         }
         if (!password) {
             toast.error('Password is required')
+            setObjCheckInput({ ...defaultValueInput, isValidPassword: false })
+
             return false;
         }
         if (password != confirmPassword) {
             toast.error('Your password is not same')
+            setObjCheckInput({ ...defaultValueInput, isValidPassword: false })
+            return false;
+
         }
         return true
     }
@@ -44,11 +61,19 @@ export default function Register() {
     }
     const handleRegister = () => {
         let check = isValidInput()
+        if (check === true) {
+            axios.post('http://localhost:8080/api/v1/register', {
+                email, phone, username, password
+            })
+        }
 
     }
     useEffect(() => {
-        // axios.get('http://localhost:8080/api/test-api').then(data =>{
-        //     console.log(data)
+        axios.get('http://localhost:8080/api/v1/test-api').then(data => {
+            console.log(data)
+        })
+        // axios.post('http://localhost:8080/api/v1/register', {
+        //     email, phone, username, password
         // })
 
     }, [])
@@ -72,29 +97,36 @@ export default function Register() {
                                     id="email"
                                     type="text"
                                     placeholder='Email '
-                                    className='d-block w-100 form-control p-2 rounded-2 border border-success' />
+                                    className={objCheckInput.isValidEmail ? 'form-control' : 'form-control is-invalid'} />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="phone">Phone number :</label>
                                 <input
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
-
-                                    id="phone" type="text" placeholder='Phone number' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
+                                    id="phone" type="text"
+                                    placeholder='Phone number'
+                                    className={objCheckInput.isValidPhone ? 'form-control' : 'form-control is-invalid'} />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="username">Username :</label>
                                 <input
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
-                                    id="username" type="text" placeholder='Username' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
+                                    id="username"
+                                    type="text"
+                                    placeholder='Username'
+                                    className='form-control' />
                             </div>
                             <div className='form-group>'>
                                 <label htmlFor="password">Password :</label>
                                 <input
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    autoComplete='' id="password" type="password" placeholder='Password' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
+                                    autoComplete=''
+                                    id="password"
+                                    type="password"
+                                    placeholder='Password' className={objCheckInput.isValidPassword ? 'form-control' : 'form-control is-invalid'} />
                             </div>
 
                             <div className='form-group>'>
@@ -102,7 +134,11 @@ export default function Register() {
                                 <input
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    autoComplete='' id="repassword" type="password" placeholder='Re-enter password' className='d-block w-100 form-control p-2 rounded-2 border border-success' />
+                                    autoComplete=''
+                                    id="repassword"
+                                    type="password"
+                                    placeholder='Re-enter password'
+                                    className={objCheckInput.isValidConfirmPassword ? 'form-control' : 'form-control is-invalid'} />
                             </div>
                             <button
                                 className='btn btn-primary'
