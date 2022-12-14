@@ -3,6 +3,7 @@ import './Register.scss'
 import { useHistory } from 'react-router-dom'
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { registerNewUser } from '../../services/userService';
 
 export default function Register() {
     const [email, setEmail] = useState("")
@@ -48,7 +49,7 @@ export default function Register() {
 
             return false;
         }
-        if (password != confirmPassword) {
+        if (password !== confirmPassword) {
             toast.error('Your password is not same')
             setObjCheckInput({ ...defaultValueInput, isValidPassword: false })
             return false;
@@ -56,22 +57,26 @@ export default function Register() {
         }
         return true
     }
-    const objectListInput = () => {
-
-    }
-    const handleRegister = () => {
+   
+    const handleRegister = async() => {
         let check = isValidInput()
         if (check === true) {
-            axios.post('http://localhost:8080/api/v1/register', {
-                email, phone, username, password
-            })
+            let resData = await registerNewUser({ email,password,phone,username})
+            
+            let serverData = resData.data;
+            if(+serverData.EC === 0){
+                toast.success("A user is created success")
+                history.push('/login')
+            }else{
+                toast.error(serverData.EM)
+            }
         }
 
     }
     useEffect(() => {
-        axios.get('http://localhost:8080/api/v1/test-api').then(data => {
-            console.log(data)
-        })
+        // axios.get('http://localhost:8080/api/v1/test-api').then(data => {
+        //     console.log(data)
+        // })
         // axios.post('http://localhost:8080/api/v1/register', {
         //     email, phone, username, password
         // })
