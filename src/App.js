@@ -6,18 +6,32 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  
 
 } from "react-router-dom";
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
+import User from './components/ManagerUser/User';
 
-
+import _ from 'lodash'
+import { useEffect, useState } from 'react';
 
 function App() {
+  const [account, setAccount] = useState({})
+  useEffect(() => {
+    let session = sessionStorage.getItem('account')
+    if (session) {
+      setAccount(JSON.parse(session))
+    }
+  
+  }, [])
   return (
     <Router>
       <div className='app-container'>
-        {/* <Nav /> */}
+
+        {
+          account && !_.isEmpty(account) && account.isAuth && <Nav />
+        }
         <Switch>
           <Route path="/about">
             About
@@ -33,6 +47,9 @@ function App() {
           </Route>
           <Route path="/register">
             <Register />
+          </Route>
+          <Route path="/users">
+            <User />
           </Route>
           <Route path="/" exact>
             Home
@@ -54,7 +71,7 @@ function App() {
         pauseOnHover
         theme="light"
       />
-     
+
     </Router>
   );
 }

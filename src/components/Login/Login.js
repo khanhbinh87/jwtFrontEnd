@@ -3,35 +3,54 @@ import './Login.scss'
 import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { loginUser } from '../../services/userService'
+
 export default function Login() {
     let history = useHistory();
     const handleCreateNewUser = () => {
         history.push('/register')
     }
     const defaultIObjInput = {
-        isValidValueLogin :true,
-        isValidValuePassword:true
+        isValidValueLogin: true,
+        isValidValuePassword: true
     }
     const [objValidLogin, setObjValidLogin] = useState(defaultIObjInput);
-    const handleLogin = async()=>{
+    const handleLogin = async () => {
         setObjValidLogin(defaultIObjInput)
-        if(!valueLogin) {
-            setObjValidLogin({...defaultIObjInput,isValidValueLogin:false})
+        if (!valueLogin) {
+            setObjValidLogin({ ...defaultIObjInput, isValidValueLogin: false })
 
             toast.error('Please enter your email or phone number ')
             return;
         }
-        if(!password) {
+        if (!password) {
             setObjValidLogin({ ...defaultIObjInput, isValidValuePassword: false })
 
             toast.error('Please enter your password ')
             return;
         }
-        let data = await loginUser({valueLogin,password});
-        console.log(data)
+        let response = await loginUser({ valueLogin, password });
+        if(response && response.data && +response.data.EC === 0){
+            let data = {
+                isAuth:true,
+                token:'fake token'
+            }
+            sessionStorage.setItem('account',JSON.stringify(data))
+            history.push('/users')
+            // window.location.reload()
+        }
+        if (response && response.data && +response.data.EC !== 0) {
+            //error
+            toast.error(response.data.EM)
+        }
     }
     const [valueLogin, setValueLogin] = useState('')
     const [password, setPassword] = useState('')
+
+    const handleKey =(e) => {
+        if(e.charCode === 13 && e.code === 'Enter'){
+            handleLogin()
+        }   
+    }
     return (
         <div className='login-container'>
             <div className='container'>
@@ -46,8 +65,8 @@ export default function Login() {
                         <div className='d-flex flex-column gap-3 mt-2'>
                             <input
                                 type="text"
-                                placeholder='Email or phone number' 
-                                className={objValidLogin.isValidValueLogin ? 'form-control': 'is-invalid form-control'}
+                                placeholder='Email or phone number'
+                                className={objValidLogin.isValidValueLogin ? 'form-control' : 'is-invalid form-control'}
                                 value={valueLogin}
                                 onChange={(e) => { setValueLogin(e.target.value) }}
                             />
@@ -57,11 +76,12 @@ export default function Login() {
                                 className={objValidLogin.isValidValuePassword ? 'form-control' : 'is-invalid form-control'}
                                 value={password}
                                 onChange={(e) => { setPassword(e.target.value) }}
-                                />
-                            <button 
+                                onKeyPress={(e) => handleKey(e)}
+                            />
+                            <button
                                 className='btn btn-primary'
                                 onClick={() => handleLogin()}
-                                >Login</button>
+                            >Login</button>
                             <span className='text-center text-primary'>
                                 <Link to="/" className='forgot-password text-decoration-none'>Forgot your password ?</Link>
                             </span>
